@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Sitio Web</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="loader-container">
+        <div class="loader"></div>
+        <p>Cargando...</p>
+    </div>
     <nav class="navbar">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <div class="logo">
@@ -19,9 +26,10 @@
         </div>
         <div style="display: flex; align-items: center; gap: 1.5rem;">
             <ul class="nav-links">
-                <li><a href="#inicio" class="nav-link">Inicio</a></li>
-                <li><a href="#servicios" class="nav-link">Servicios</a></li>
-                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                <li><a href="index.html#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="index.html#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="reviews.html" class="nav-link">Reseñas</a></li>
+                <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
             </ul>
             <a href="login.html" class="btn-primary">
                 <i class="fas fa-lock"></i> Admin
@@ -30,7 +38,7 @@
     </nav>
 
     <section id="inicio" class="section">
-        <h1 class="animate-on-scroll">Construye el futuro con nosotros</h1>
+        <h1 class="animate-on-scroll">Digitaliza tu negocio con nosotros</h1>
         <p class="animate-on-scroll" style="font-size: 1.25rem; max-width: 600px; text-align: center; margin-bottom: 2rem;">
             Una plataforma de desarrollo moderna para impulsar la innovación en tu empresa
         </p>
@@ -45,26 +53,56 @@
     <section id="servicios" class="section">
         <h2 class="animate-on-scroll">Nuestros Servicios</h2>
         <div class="servicios-grid">
-            <div class="servicio-card animate-on-scroll">
+            <div class="servicio-card">
                 <i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
                 <h3>Web Simple</h3>
                 <p>Página web básica ideal para presencia online. Diseño responsive y optimizado para buscadores.</p>
+                <div class="caracteristicas-dropdown">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Diseño responsive</li>
+                        <li><i class="fas fa-check"></i> Optimización SEO básica</li>
+                        <li><i class="fas fa-check"></i> Hasta 5 secciones</li>
+                        <li><i class="fas fa-check"></i> Formulario de contacto</li>
+                        <li><i class="fas fa-check"></i> Integración con redes sociales</li>
+                    </ul>
+                </div>
             </div>
-            <div class="servicio-card animate-on-scroll">
+            <div class="servicio-card">
                 <i class="fas fa-window-maximize" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
                 <h3>Web Normal</h3>
                 <p>Sitio web dinámico con múltiples páginas, formularios interactivos y panel de administración.</p>
+                <div class="caracteristicas-dropdown">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Todo lo de Web Simple +</li>
+                        <li><i class="fas fa-check"></i> Panel de administración</li>
+                        <li><i class="fas fa-check"></i> Blog integrado</li>
+                        <li><i class="fas fa-check"></i> Hasta 10 secciones</li>
+                        <li><i class="fas fa-check"></i> Animaciones personalizadas</li>
+                        <li><i class="fas fa-check"></i> Optimización SEO avanzada</li>
+                    </ul>
+                </div>
             </div>
-            <div class="servicio-card animate-on-scroll">
+            <div class="servicio-card">
                 <i class="fas fa-rocket" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
                 <h3>Web Pro</h3>
                 <p>Solución web completa con e-commerce, sistema de usuarios, analíticas y optimización avanzada.</p>
+                <div class="caracteristicas-dropdown">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Todo lo de Web Normal +</li>
+                        <li><i class="fas fa-check"></i> E-commerce completo</li>
+                        <li><i class="fas fa-check"></i> Sistema de usuarios</li>
+                        <li><i class="fas fa-check"></i> Pasarela de pagos</li>
+                        <li><i class="fas fa-check"></i> Analíticas avanzadas</li>
+                        <li><i class="fas fa-check"></i> Secciones ilimitadas</li>
+                        <li><i class="fas fa-check"></i> Optimización de rendimiento</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="contacto" class="section">
-        <h2 class="animate-on-scroll">Contacto</h2>
+        <h2 class="animate-on-scroll">Contactacta ya</h2>
         <div class="contacto-container">
             <form id="contactForm" class="contacto-form animate-on-scroll">
                 <div class="form-group">
@@ -105,9 +143,20 @@
         </div>
     </section>
 
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js"></script>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 George Designs. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="https://facebook.com" target="_blank">Facebook</a>
+                <a href="https://twitter.com" target="_blank">Twitter</a>
+                <a href="https://instagram.com" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js"></script> <!-- Asegúrate de que este script esté al final -->
 </body>
-</html> 
+</html>

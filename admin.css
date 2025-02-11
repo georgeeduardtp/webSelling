@@ -114,4 +114,29 @@
 
 .btn-icon:hover {
     color: var(--color-text-primary);
+}
+
+.admin-reviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.review-card {
+    flex: 1 1 calc(33.33% - 1rem);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    padding: 1rem;
+    background: var(--color-bg-secondary);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+}
+
+.review-rating {
+    margin-bottom: 0.5rem;
+    color: var(--color-link);
+    font-size: 1.2rem;
 } 

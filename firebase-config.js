@@ -2,7 +2,7 @@ const firebaseConfig = {
     // Tu configuración de Firebase aquí
     apiKey: "AIzaSyD6hezS3KESTHkpv3jVWH0MIPHARw6SVo0",
     authDomain: "webselling-79240.firebaseapp.com",
-    databaseURL: "https://webselling-79240-default-rtdb.firebaseio.com",
+    databaseURL: "https://webselling-79240-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "webselling-79240",
     storageBucket: "webselling-79240.firebasestorage.app",
     messagingSenderId: "55683953548",
@@ -10,6 +10,26 @@ const firebaseConfig = {
     measurementId: "G-LY5YXNR6B8"
 };
 
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database(); 
+// Esperar a que firebase esté disponible
+function initializeFirebase() {
+    try {
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK no está cargado');
+        }
+
+        // Inicializar Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        window.db = firebase.database();
+    } catch (error) {
+        console.error('Error al inicializar Firebase:', error);
+    }
+}
+
+// Intentar inicializar Firebase cuando el script se cargue
+initializeFirebase();
+
+// También intentar inicializar cuando el documento esté listo
+document.addEventListener('DOMContentLoaded', initializeFirebase); 

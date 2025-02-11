@@ -1,14 +1,66 @@
 class AdminPanel {
     constructor() {
-        // Verificar autenticación
-        if (!this.checkAuth()) {
-            window.location.href = 'login.html';
-            return;
-        }
+        this.initializeFirebase();
+        this.setupMenuNavigation();
+    }
+
+    setupMenuNavigation() {
+        const menuItems = document.querySelectorAll('.admin-menu-item');
         
-        this.messages = [];
-        this.init();
-        this.setupFirebaseListener();
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.dataset.section;
+                this.showSection(section);
+                
+                // Actualizar clase activa
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    }
+
+    showSection(sectionName) {
+        // Ocultar todas las secciones
+        document.querySelectorAll('.admin-section').forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Mostrar la sección seleccionada
+        const section = document.getElementById(`${sectionName}Section`);
+        if (section) {
+            section.style.display = 'block';
+        }
+    }
+
+    async initializeFirebase() {
+        try {
+            let attempts = 0;
+            while (typeof window.db === 'undefined' && attempts < 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+
+            if (typeof window.db === 'undefined') {
+                throw new Error('Firebase no se inicializó correctamente');
+            }
+
+            if (!this.checkAuth()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            this.messages = [];
+            this.init();
+            this.setupFirebaseListener();
+            setupReviewsAdmin();
+            
+            // Mostrar la sección inicial (mensajes)
+            this.showSection('messages');
+        } catch (error) {
+            console.error('Error al inicializar AdminPanel:', error);
+            alert('Error al conectar con el servidor. Por favor, recarga la página.');
+        }
     }
 
     // Agregar método para verificar autenticación
@@ -142,7 +194,12 @@ class AdminPanel {
     }
 
     setupFirebaseListener() {
-        db.ref('messages').on('value', (snapshot) => {
+        if (!window.db) {
+            console.error('Firebase no está inicializado');
+            return;
+        }
+        
+        window.db.ref('messages').on('value', (snapshot) => {
             this.messages = [];
             snapshot.forEach((child) => {
                 this.messages.push({
@@ -155,5 +212,170 @@ class AdminPanel {
     }
 }
 
-// Inicializar el panel de administración
-const adminPanel = new AdminPanel(); 
+// Esperar a que el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    const adminPanel = new AdminPanel();
+});
+
+// Agregar esta función para manejar las reseñas
+function setupReviewsAdmin() {
+    const pendingReviewsList = document.getElementById('pendingReviewsList');
+    const approvedReviewsList = document.getElementById('approvedReviewsList'); // Nueva lista para reseñas aprobadas
+
+    // Cargar reseñas pendientes
+    function loadPendingReviews() {
+        db.ref('reviews').orderByChild('status').equalTo('pending').on('value', (snapshot) => {
+            pendingReviewsList.innerHTML = '';
+            
+            if (!snapshot.exists()) {
+                pendingReviewsList.innerHTML = '<p class="no-reviews">No hay reseñas pendientes</p>';
+                return;
+            }
+
+            snapshot.forEach((child) => {
+                const review = child.val();
+                const date = new Date(review.timestamp);
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review-card admin-review';
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating); // Generar estrellas
+                reviewElement.innerHTML = `
+                    <div class="review-header">
+                        <span class="review-author">${review.nombre}</span>
+                        <span class="review-date">${date.toLocaleDateString()}</span>
+                    </div>
+                    <div class="review-subject">${review.asunto}</div>
+                    <div class="review-rating">${stars}</div> <!-- Mostrar estrellas -->
+                    <div class="review-content">${review.descripcion}</div>
+                    <div class="review-actions">
+                        <button class="btn-primary approve-review" data-id="${child.key}">
+                            <i class="fas fa-check"></i> Aprobar
+                        </button>
+                        <button class="btn-danger reject-review" data-id="${child.key}">
+                            <i class="fas fa-times"></i> Rechazar
+                        </button>
+                    </div>
+                `;
+                
+                pendingReviewsList.appendChild(reviewElement);
+            });
+
+            // Agregar event listeners para los botones
+            document.querySelectorAll('.approve-review').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.dataset.id;
+                    approveReview(reviewId);
+                });
+            });
+
+            document.querySelectorAll('.reject-review').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.dataset.id;
+                    rejectReview(reviewId);
+                });
+            });
+        });
+    }
+
+    // Cargar reseñas aprobadas
+    function loadApprovedReviews() {
+        db.ref('reviews').orderByChild('status').equalTo('approved').on('value', (snapshot) => {
+            approvedReviewsList.innerHTML = '';
+            
+            if (!snapshot.exists()) {
+                approvedReviewsList.innerHTML = '<p class="no-reviews">No hay reseñas aprobadas</p>';
+                return;
+            }
+
+            snapshot.forEach((child) => {
+                const review = child.val();
+                const date = new Date(review.timestamp);
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review-card admin-review';
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating); // Generar estrellas
+                reviewElement.innerHTML = `
+                    <div class="review-header">
+                        <span class="review-author">${review.nombre}</span>
+                        <span class="review-date">${date.toLocaleDateString()}</span>
+                    </div>
+                    <div class="review-subject">${review.asunto}</div>
+                    <div class="review-rating">${stars}</div> <!-- Mostrar estrellas -->
+                    <div class="review-content">${review.descripcion}</div>
+                    <div class="review-actions">
+                        <button class="btn-danger delete-review" data-id="${child.key}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                `;
+                
+                approvedReviewsList.appendChild(reviewElement);
+            });
+
+            // Agregar event listeners para los botones de eliminar
+            document.querySelectorAll('.delete-review').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.dataset.id;
+                    deleteReview(reviewId);
+                });
+            });
+        });
+    }
+
+    function approveReview(reviewId) {
+        db.ref(`reviews/${reviewId}`).update({
+            status: 'approved'
+        }).then(() => {
+            showNotification('Reseña aprobada correctamente');
+            loadApprovedReviews(); // Recargar reseñas aprobadas después de aprobar
+        }).catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al aprobar la reseña', 'error');
+        });
+    }
+
+    function rejectReview(reviewId) {
+        if (confirm('¿Estás seguro de que quieres rechazar esta reseña?')) {
+            db.ref(`reviews/${reviewId}`).remove()
+                .then(() => {
+                    showNotification('Reseña rechazada correctamente');
+                    loadPendingReviews(); // Recargar reseñas pendientes después de rechazar
+                }).catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error al rechazar la reseña', 'error');
+                });
+        }
+    }
+
+    function deleteReview(reviewId) {
+        if (confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
+            db.ref(`reviews/${reviewId}`).remove()
+                .then(() => {
+                    showNotification('Reseña eliminada correctamente');
+                    loadApprovedReviews(); // Recargar reseñas aprobadas después de eliminar
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error al eliminar la reseña', 'error');
+                });
+        }
+    }
+
+    loadPendingReviews();
+    loadApprovedReviews(); // Cargar reseñas aprobadas al inicio
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Agregar estos estilos en styles.css 

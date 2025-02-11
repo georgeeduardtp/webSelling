@@ -55,12 +55,15 @@ function setupNavigation() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
             
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            
-            smoothScroll(targetSection, navOffset);
+            // Si el enlace es a una sección en la misma página
+            if (targetId.startsWith('#')) {
+                const targetSection = document.querySelector(targetId);
+                smoothScroll(targetSection, navOffset);
+            } else {
+                // Si el enlace es a otra página
+                window.location.href = targetId;
+            }
         });
     });
 }
@@ -168,7 +171,24 @@ function updateSearchCount(count, current = 0) {
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    setupNavigation();
+    const loader = document.querySelector('.loader-container');
+    
+    // Ocultar loader cuando la página esté completamente cargada
+    window.addEventListener('load', () => {
+        loader.classList.add('hidden');
+    });
+
+    // Mostrar loader cuando se navega entre secciones
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            loader.classList.remove('hidden');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 500); // Ajustar este tiempo según necesites
+        });
+    });
+
+    setupNavigation(); // Asegúrate de que esta función se llame aquí
     setupSearch();
     handleScrollAnimations();
     updateActiveLink();
@@ -180,42 +200,70 @@ window.addEventListener('scroll', () => {
     updateActiveLink();
 });
 
-// Manejar el envío del formulario de contacto
-document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = {
-        id: Date.now(),
-        name: document.getElementById('nombre').value,
-        email: document.getElementById('email').value,
-        message: document.getElementById('mensaje').value,
-        date: new Date().toISOString().split('T')[0],
-        read: false
-    };
-
-    // Guardar en Firebase
-    db.ref('messages').push(formData)
-        .then(() => {
-            // Mostrar notificación
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <span>Mensaje enviado, nos comunicaremos lo antes posible</span>
-            `;
-            document.body.appendChild(notification);
-
-            setTimeout(() => notification.classList.add('show'), 100);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
+// Actualizar el manejo del formulario
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            this.reset();
-        })
-        .catch(error => {
-            alert('Error al enviar el mensaje: ' + error.message);
+            // Deshabilitar el botón mientras se envía
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            
+            const formData = {
+                id: Date.now(),
+                name: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('mensaje').value,
+                date: new Date().toISOString().split('T')[0],
+                read: false
+            };
+
+            // Verificar que db está definido
+            if (typeof db === 'undefined') {
+                console.error('Firebase no está inicializado correctamente');
+                alert('Error: No se pudo conectar con el servidor');
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Guardar en Firebase
+            db.ref('messages').push(formData)
+                .then(() => {
+                    // Mostrar notificación de éxito
+                    const notification = document.createElement('div');
+                    notification.className = 'notification';
+                    notification.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <span>Mensaje enviado correctamente</span>
+                    `;
+                    document.body.appendChild(notification);
+
+                    // Animar la notificación
+                    setTimeout(() => notification.classList.add('show'), 100);
+                    
+                    // Limpiar el formulario
+                    this.reset();
+                    
+                    // Remover la notificación después de 3 segundos
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 3000);
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar el mensaje: ' + error.message);
+                })
+                .finally(() => {
+                    // Reactivar el botón
+                    submitButton.disabled = false;
+                    const loader = document.querySelector('.loader-container');
+                    loader.classList.add('hidden');
+                });
         });
+    }
 });
 
 // Agregar al final del archivo
@@ -232,4 +280,14 @@ document.getElementById('toggleInfo')?.addEventListener('click', function() {
         icon.className = 'fas fa-info-circle';
         this.innerHTML = `${icon.outerHTML} Información de contacto`;
     }
-}); 
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});

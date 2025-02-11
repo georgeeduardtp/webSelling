@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="admin.css">
@@ -29,6 +32,10 @@
                     <i class="fas fa-envelope"></i>
                     Mensajes
                 </a>
+                <a href="#" class="admin-menu-item" data-section="reviews">
+                    <i class="fas fa-star"></i>
+                    Reseñas
+                </a>
                 <a href="#" class="admin-menu-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     Configuración
@@ -37,26 +44,51 @@
         </div>
 
         <div class="admin-content">
-            <div class="admin-header">
-                <h1>Mensajes</h1>
-                <div class="admin-actions">
-                    <button class="btn-primary" id="deleteSelected">
-                        <i class="fas fa-trash"></i> Eliminar seleccionados
-                    </button>
-                    <button class="btn-primary" id="markAsRead">
-                        <i class="fas fa-check-double"></i> Marcar como leídos
-                    </button>
+            <!-- Sección de Mensajes -->
+            <div class="admin-section" id="messagesSection">
+                <div class="admin-header">
+                    <h1>Mensajes</h1>
+                    <div class="admin-actions">
+                        <button class="btn-primary" id="deleteSelected">
+                            <i class="fas fa-trash"></i> Eliminar seleccionados
+                        </button>
+                        <button class="btn-primary" id="markAsRead">
+                            <i class="fas fa-check-double"></i> Marcar como leídos
+                        </button>
+                    </div>
+                </div>
+                <div class="messages-list">
+                    <!-- Los mensajes se cargarán dinámicamente aquí -->
                 </div>
             </div>
 
-            <div class="messages-list">
-                <!-- Los mensajes se cargarán dinámicamente aquí -->
+            <!-- Sección de Reseñas -->
+            <div class="admin-section" id="reviewsSection" style="display: none;">
+                <div class="admin-header">
+                    <h1>Gestión de Reseñas</h1>
+                </div>
+                <div class="pending-reviews">
+                    <h3>Reseñas Pendientes</h3>
+                    <div id="pendingReviewsList" class="reviews-list admin-reviews"></div>
+                </div>
+                <div class="approved-reviews">
+                    <h3>Reseñas Aprobadas</h3>
+                    <div id="approvedReviewsList" class="reviews-list admin-reviews"></div>
+                </div>
+            </div>
+
+            <!-- Sección de Configuración -->
+            <div class="admin-section" id="settingsSection" style="display: none;">
+                <div class="admin-header">
+                    <h1>Configuración</h1>
+                </div>
+                <!-- Contenido de configuración aquí -->
             </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="admin.js"></script>
 </body>

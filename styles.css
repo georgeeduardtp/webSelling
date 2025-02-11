@@ -41,6 +41,9 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .logo:hover {
@@ -53,6 +56,7 @@ body {
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    display: block;
 }
 
 .logo:hover .logo-img {
@@ -124,20 +128,22 @@ body {
     border-radius: 6px;
     border: 1px solid var(--color-border);
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    position: relative;
+    overflow: visible;
 }
 
 .servicio-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(47, 129, 247, 0.25);
+    box-shadow: 0 8px 20px rgba(47, 129, 247, 0.2);
 }
 
 .servicio-card i {
-    transition: transform 0.3s ease, color 0.3s ease;
+    transition: transform 0.2s ease-out, color 0.2s ease-out;
 }
 
 .servicio-card:hover i {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     color: var(--color-link) !important;
 }
 
@@ -167,7 +173,39 @@ body {
     background: var(--color-bg-secondary);
     padding: 2rem;
     border-radius: 8px;
-    border: 1px solid var(--color-border);
+    border: none;
+    position: relative;
+    z-index: 1;
+}
+
+.contacto-form::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    background: linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    );
+    border-radius: 10px;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.contacto-form::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--color-bg-secondary);
+    border-radius: 8px;
+    z-index: -1;
 }
 
 .contacto-form .form-group {
@@ -197,6 +235,26 @@ body {
     font-family: inherit;
 }
 
+/* Efectos al hacer focus en los campos del formulario */
+.contacto-form input:focus,
+.contacto-form textarea:focus {
+    border-color: transparent;
+    outline: none;
+    background-image: linear-gradient(
+        var(--color-bg-default),
+        var(--color-bg-default)
+    ) padding-box,
+    linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    ) border-box;
+    border: 1px solid transparent;
+    box-shadow: 0 0 10px rgba(47, 129, 247, 0.15);
+    transform: translateY(-1px);
+}
+
 /* Efecto de línea animada */
 .contacto-form .form-group::after {
     content: '';
@@ -205,7 +263,12 @@ body {
     left: 50%;
     width: 0;
     height: 2px;
-    background: var(--color-link);
+    background: linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    );
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
 }
@@ -216,16 +279,16 @@ body {
 }
 
 .contacto-form .form-group:focus-within label {
-    color: var(--color-link);
+    background: linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     transform: translateY(-2px);
-}
-
-.contacto-form input:focus,
-.contacto-form textarea:focus {
-    border-color: var(--color-link);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(47,129,247,0.15);
-    transform: translateY(-1px);
 }
 
 /* Efecto al hacer clic */
@@ -284,7 +347,7 @@ body {
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Animación para la sección de inicio */
@@ -301,7 +364,7 @@ body {
 #servicios .servicio-card {
     opacity: 0;
     transform: translateX(-30px);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transition-delay: calc(var(--card-index) * 0.1s);
 }
 
@@ -322,7 +385,37 @@ body {
     transform: scale(1);
 }
 
-/* Botón estilo GitHub */
+/* Estilo base para todos los botones con efecto de brillo */
+.btn-primary, .btn-info, .btn-comenzar {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo común */
+.btn-primary::before, .btn-info::before, .btn-comenzar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease-out;
+}
+
+/* Animación del brillo al hover */
+.btn-primary:hover::before, 
+.btn-info:hover::before, 
+.btn-comenzar:hover::before {
+    left: 100%;
+}
+
+/* Botón estilo GitHub (restaurar estilos base) */
 .btn-primary {
     display: inline-block;
     padding: 5px 16px;
@@ -339,6 +432,8 @@ body {
     background-color: var(--color-btn-primary);
     color: #ffffff;
     transition: all 0.3s ease;
+    position: relative; /* Para el efecto de brillo */
+    overflow: hidden; /* Para el efecto de brillo */
 }
 
 .btn-primary:hover {
@@ -349,6 +444,30 @@ body {
 
 .btn-primary:active {
     transform: translateY(0);
+}
+
+/* Restaurar estilos del btn-info */
+.btn-info {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    padding: 5px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative; /* Para el efecto de brillo */
+    overflow: hidden; /* Para el efecto de brillo */
+}
+
+.btn-info:hover {
+    background: var(--color-border);
+    transform: translateY(-2px);
 }
 
 /* Estilos para la barra de búsqueda */
@@ -443,10 +562,6 @@ body {
 
 .nav-link.active {
     color: var(--color-link) !important;
-}
-
-.nav-link.active::after {
-    width: 100%;
 }
 
 .nav-link:hover {
@@ -624,65 +739,37 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 12px 24px;
-    background: var(--color-btn-primary);
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    background: linear-gradient(45deg, 
+        var(--color-btn-primary), 
+        var(--color-btn-hover)
+    );
+    border: none;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 
 .btn-comenzar:hover {
-    background: var(--color-btn-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(35, 134, 54, 0.4);
+    box-shadow: 0 6px 20px rgba(35, 134, 54, 0.4);
 }
 
 .btn-comenzar:active {
     transform: translateY(1px);
-    box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+    box-shadow: 0 2px 10px rgba(35, 134, 54, 0.3);
 }
 
 .btn-comenzar i {
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease-out;
 }
 
 .btn-comenzar:hover i {
     transform: translateX(4px);
-}
-
-/* Efecto de pulso */
-.btn-comenzar::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    transform: scale(0);
-    opacity: 0;
-    transition: all 0.5s ease;
-}
-
-.btn-comenzar:hover::after {
-    transform: scale(1.5);
-    opacity: 0;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
 }
 
 /* Animaciones específicas para los títulos de sección */
@@ -695,4 +782,447 @@ body {
 .section h2.animate-on-scroll.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Estilos para el dropdown de características */
+.caracteristicas-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease-out;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.servicio-card:hover .caracteristicas-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.caracteristicas-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.caracteristicas-dropdown li {
+    padding: 0.5rem 0;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.caracteristicas-dropdown li i {
+    color: var(--color-btn-primary);
+    font-size: 0.8rem;
+}
+
+/* Agregar una flecha indicadora */
+.caracteristicas-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--color-bg-secondary);
+    border-left: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-border);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+/* Ajustar el espaciado para móviles */
+@media (max-width: 768px) {
+    .caracteristicas-dropdown {
+        position: static;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .servicio-card:hover .caracteristicas-dropdown {
+        display: block;
+    }
+
+    .caracteristicas-dropdown::before {
+        display: none;
+    }
+}
+
+/* Estilos para el fondo animado */
+#inicio {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-bg-default);
+}
+
+#inicio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 0% 0%, 
+            rgba(35, 134, 54, 0.15) 0%, 
+            transparent 50%),
+        radial-gradient(circle at 100% 0%, 
+            rgba(47, 129, 247, 0.15) 0%, 
+            transparent 50%),
+        radial-gradient(circle at 50% 100%, 
+            rgba(47, 129, 247, 0.15) 0%, 
+            transparent 50%);
+    animation: gradientAnimation 15s ease infinite alternate;
+    z-index: 1;
+}
+
+#inicio::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="%23304050" opacity="0.05"/></svg>');
+    opacity: 0.3;
+    z-index: 2;
+}
+
+#inicio > * {
+    position: relative;
+    z-index: 3;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1.2) rotate(5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Ajustar el estilo del texto para que destaque mejor */
+#inicio h1 {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(45deg, var(--color-text-primary) 30%, #ffffff 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#inicio p {
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Mejorar el botón para que destaque más */
+.btn-comenzar {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, 
+        var(--color-btn-primary), 
+        var(--color-btn-hover)
+    );
+    border: none;
+    box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);
+}
+
+.btn-comenzar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.btn-comenzar:hover::before {
+    left: 100%;
+}
+
+/* Estilos para el loader */
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-default);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+
+.loader-container.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--color-border);
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    border-top-color: var(--color-btn-primary);
+    margin-bottom: 1rem;
+}
+
+.loader-container p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilos para la página de reseñas */
+.reviews-page {
+    padding-top: 80px;
+    min-height: 100vh;
+    background: var(--color-bg-default);
+}
+
+.reviews-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.reviews-form-section,
+.reviews-list-section {
+    padding: 2rem;
+}
+
+.reviews-form-section h2,
+.reviews-list-section h2 {
+    color: var(--color-text-primary);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.review-card {
+    background: var(--color-bg-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.review-date {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.review-subject {
+    color: var(--color-link);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-content {
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .reviews-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para la administración de reseñas */
+.admin-reviews {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.admin-review {
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.admin-review:hover {
+    transform: translateY(-2px);
+}
+
+.review-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.btn-danger {
+    background-color: #d73a49;
+    color: white;
+    border: none;
+    padding: 5px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #cb2431;
+    transform: translateY(-2px);
+}
+
+.no-reviews {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 2rem;
+}
+
+/* Estilos para el sistema de estrellas */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: 1.5rem;
+    transition: color 0.2s ease;
+}
+
+/* Aplicar el degradado a las estrellas */
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    background: linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Mostrar estrellas en las reseñas */
+.review-rating {
+    margin-bottom: 0.5rem;
+    background: linear-gradient(
+        45deg,
+        var(--color-btn-primary),
+        var(--color-link),
+        var(--color-btn-hover)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.2rem;
+}
+
+.footer {
+    background: var(--color-header-bg);
+    color: var(--color-text-primary);
+    padding: 1rem;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.social-links {
+    margin-top: 0.5rem;
+}
+
+.social-links a {
+    color: var(--color-link);
+    margin: 0 0.5rem;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    text-decoration: underline;
+}
+
+/* Animaciones para la entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+html {
+    scroll-behavior: smooth;
 } 
