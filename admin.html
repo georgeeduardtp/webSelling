@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo" class="logo-img">
+            Panel Admin
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="index.html" class="btn-primary">Volver al sitio</a>
+            <button onclick="adminPanel.logout()" class="btn-primary">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <div class="admin-menu">
+                <a href="#" class="admin-menu-item active" data-section="messages">
+                    <i class="fas fa-envelope"></i>
+                    Mensajes
+                </a>
+                <a href="#" class="admin-menu-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    Configuración
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Mensajes</h1>
+                <div class="admin-actions">
+                    <button class="btn-primary" id="deleteSelected">
+                        <i class="fas fa-trash"></i> Eliminar seleccionados
+                    </button>
+                    <button class="btn-primary" id="markAsRead">
+                        <i class="fas fa-check-double"></i> Marcar como leídos
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages-list">
+                <!-- Los mensajes se cargarán dinámicamente aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html> 

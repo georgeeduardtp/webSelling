@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Sitio Web</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo" class="logo-img">
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Buscar en la página... (Enter para navegar)">
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <ul class="nav-links">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+            </ul>
+            <a href="login.html" class="btn-primary">
+                <i class="fas fa-lock"></i> Admin
+            </a>
+        </div>
+    </nav>
+
+    <section id="inicio" class="section">
+        <h1 class="animate-on-scroll">Construye el futuro con nosotros</h1>
+        <p class="animate-on-scroll" style="font-size: 1.25rem; max-width: 600px; text-align: center; margin-bottom: 2rem;">
+            Una plataforma de desarrollo moderna para impulsar la innovación en tu empresa
+        </p>
+        <div class="animate-on-scroll">
+            <a href="#contacto" style="
+                display: inline-block;
+                padding: 12px 24px;
+                background: var(--color-btn-primary);
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 500;
+                transition: background 0.2s;
+            ">Comenzar ahora</a>
+        </div>
+    </section>
+
+    <section id="servicios" class="section">
+        <h2 class="animate-on-scroll">Nuestros Servicios</h2>
+        <div class="servicios-grid">
+            <div class="servicio-card animate-on-scroll">
+                <i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
+                <h3>Web Simple</h3>
+                <p>Página web básica ideal para presencia online. Diseño responsive y optimizado para buscadores.</p>
+            </div>
+            <div class="servicio-card animate-on-scroll">
+                <i class="fas fa-window-maximize" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
+                <h3>Web Normal</h3>
+                <p>Sitio web dinámico con múltiples páginas, formularios interactivos y panel de administración.</p>
+            </div>
+            <div class="servicio-card animate-on-scroll">
+                <i class="fas fa-rocket" style="font-size: 2.5rem; color: var(--color-text-secondary); margin-bottom: 1rem;"></i>
+                <h3>Web Pro</h3>
+                <p>Solución web completa con e-commerce, sistema de usuarios, analíticas y optimización avanzada.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="section">
+        <h2 class="animate-on-scroll">Contacto</h2>
+        <div class="contacto-container">
+            <form id="contactForm" class="contacto-form animate-on-scroll">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Enviar mensaje
+                    </button>
+                    <button type="button" class="btn-info" id="toggleInfo">
+                        <i class="fas fa-info-circle"></i> Información de contacto
+                    </button>
+                </div>
+                <div class="info-dropdown" id="infoDropdown">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>correo@ejemplo.com</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+34 123 456 789</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-location-dot"></i>
+                        <p>Calle Principal 123, Ciudad</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html> 

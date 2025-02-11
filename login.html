@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Panel Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg-default);
+            padding: 1rem;
+        }
+
+        .login-form {
+            background: var(--color-bg-secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            background: var(--color-bg-default);
+            border-radius: 6px;
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--color-link);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(47,129,247,0.2);
+        }
+
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-link);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .form-group input:focus + label,
+        .form-group:focus-within label {
+            color: var(--color-link);
+            transform: translateY(-2px);
+        }
+
+        .form-group:focus-within::after {
+            width: 100%;
+        }
+
+        .form-group input:active {
+            transform: scale(0.99);
+        }
+
+        .error-message {
+            color: #f85149;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .login-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .back-link {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            color: var(--color-text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <form class="login-form" id="loginForm">
+            <div class="login-header">
+                <div class="logo">
+                    <img src="images/logo.png" alt="Logo" class="logo-img">
+                </div>
+                <h1>Iniciar Sesión</h1>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                Usuario o contraseña incorrectos
+            </div>
+            
+            <div class="login-actions">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver al sitio
+                </a>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Verificar credenciales
+            if (username === 'georgeAdmin' && password === 'Fantastici07@') {
+                // Guardar el estado de autenticación con timestamp
+                const authData = {
+                    authenticated: true,
+                    timestamp: Date.now(),
+                    expiresIn: 3600000 // 1 hora en milisegundos
+                };
+                localStorage.setItem('adminAuth', JSON.stringify(authData));
+                
+                // Redirigir al panel de admin
+                window.location.href = 'admin.html';
+            } else {
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html> 
