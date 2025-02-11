@@ -1,13 +1,38 @@
 // Función para manejar las animaciones al hacer scroll
 function handleScrollAnimations() {
+    // Animar elementos generales
     const elements = document.querySelectorAll('.animate-on-scroll');
     
     elements.forEach(element => {
         const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
         const windowHeight = window.innerHeight;
         
-        if (elementTop < windowHeight * 0.8) {
+        // Verificar si el elemento está fuera de la vista
+        if (elementBottom < 0 || elementTop > windowHeight) {
+            element.classList.remove('visible');
+        }
+        // Verificar si el elemento está entrando en la vista
+        else if (elementTop < windowHeight * 0.8) {
             element.classList.add('visible');
+        }
+    });
+
+    // Animar tarjetas de servicios con delay
+    const cards = document.querySelectorAll('.servicio-card');
+    cards.forEach((card, index) => {
+        card.style.setProperty('--card-index', index);
+        const cardTop = card.getBoundingClientRect().top;
+        const cardBottom = card.getBoundingClientRect().bottom;
+        const windowHeight = window.innerHeight;
+        
+        // Verificar si la tarjeta está fuera de la vista
+        if (cardBottom < 0 || cardTop > windowHeight) {
+            card.classList.remove('visible');
+        }
+        // Verificar si la tarjeta está entrando en la vista
+        else if (cardTop < windowHeight * 0.8) {
+            card.classList.add('visible');
         }
     });
 }
@@ -168,31 +193,29 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e) {
         read: false
     };
 
-    // Obtener mensajes existentes del localStorage
-    let messages = JSON.parse(localStorage.getItem('adminMessages') || '[]');
-    messages.push(formData);
-    localStorage.setItem('adminMessages', JSON.stringify(messages));
+    // Guardar en Firebase
+    db.ref('messages').push(formData)
+        .then(() => {
+            // Mostrar notificación
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>Mensaje enviado, nos comunicaremos lo antes posible</span>
+            `;
+            document.body.appendChild(notification);
 
-    // Crear y mostrar la notificación
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = `
-        <i class="fas fa-check-circle"></i>
-        <span>Mensaje enviado, nos comunicaremos lo antes posible</span>
-    `;
-    document.body.appendChild(notification);
-
-    // Mostrar la notificación
-    setTimeout(() => notification.classList.add('show'), 100);
-
-    // Ocultar y eliminar la notificación después de 3 segundos
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-    
-    // Limpiar formulario
-    this.reset();
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
+            this.reset();
+        })
+        .catch(error => {
+            alert('Error al enviar el mensaje: ' + error.message);
+        });
 });
 
 // Agregar al final del archivo

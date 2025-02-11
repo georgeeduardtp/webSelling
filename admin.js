@@ -8,13 +8,14 @@ class AdminPanel {
         
         this.messages = [];
         this.init();
+        this.setupFirebaseListener();
     }
 
     // Agregar método para verificar autenticación
     checkAuth() {
         const authData = JSON.parse(localStorage.getItem('adminAuth'));
         
-        if (!authData || !authData.authenticated) {
+        if (!authData || !authData.authenticated || !authData.isAdmin) {
             return false;
         }
 
@@ -48,28 +49,38 @@ class AdminPanel {
 
     renderMessages() {
         const messagesList = document.querySelector('.messages-list');
-        messagesList.innerHTML = this.messages.map(message => `
-            <div class="message-item ${message.read ? '' : 'unread'}" data-id="${message.id}">
-                <input type="checkbox" class="message-checkbox">
-                <div class="message-content">
-                    <div class="message-header">
-                        <div class="message-info">
-                            <strong>${message.name}</strong> &lt;${message.email}&gt;
-                            <span class="message-date">${new Date(message.date).toLocaleDateString()}</span>
-                        </div>
-                        <div class="message-actions">
-                            <button class="btn-icon" onclick="adminPanel.toggleRead(${message.id})">
-                                <i class="fas ${message.read ? 'fa-envelope-open' : 'fa-envelope'}"></i>
-                            </button>
-                            <button class="btn-icon" onclick="adminPanel.deleteMessage(${message.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+        messagesList.innerHTML = '';
+
+        // Ordenar mensajes por fecha, más recientes primero
+        this.messages.sort((a, b) => b.id - a.id);
+
+        this.messages.forEach(message => {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message-item ${message.read ? 'read' : 'unread'}`;
+            messageElement.dataset.id = message.id;
+            
+            messageElement.innerHTML = `
+                <div class="message-header">
+                    <input type="checkbox" class="message-checkbox">
+                    <div class="message-info">
+                        <span class="message-name">${message.name}</span>
+                        <span class="message-email">${message.email}</span>
+                        <span class="message-date">${message.date}</span>
                     </div>
-                    <div class="message-body">${message.message}</div>
                 </div>
-            </div>
-        `).join('');
+                <div class="message-content">
+                    <p>${message.message}</p>
+                </div>
+            `;
+            
+            messagesList.appendChild(messageElement);
+        });
+
+        // Actualizar contador de mensajes
+        const totalMessages = this.messages.length;
+        const unreadMessages = this.messages.filter(m => !m.read).length;
+        document.querySelector('.admin-header h1').textContent = 
+            `Mensajes (${unreadMessages} sin leer de ${totalMessages})`;
     }
 
     toggleRead(id) {
@@ -89,7 +100,7 @@ class AdminPanel {
 
     deleteSelected() {
         const selectedIds = Array.from(document.querySelectorAll('.message-checkbox:checked'))
-            .map(checkbox => parseInt(checkbox.closest('.message-item').dataset.id));
+            .map(checkbox => checkbox.closest('.message-item').dataset.id);
         
         if (selectedIds.length === 0) {
             alert('Por favor, selecciona al menos un mensaje para eliminar.');
@@ -97,31 +108,50 @@ class AdminPanel {
         }
 
         if (confirm(`¿Estás seguro de que quieres eliminar ${selectedIds.length} mensaje(s)?`)) {
-            this.messages = this.messages.filter(m => !selectedIds.includes(m.id));
-            this.renderMessages();
+            // Eliminar mensajes de Firebase
+            selectedIds.forEach(id => {
+                const message = this.messages.find(m => m.id.toString() === id);
+                if (message && message.firebaseKey) {
+                    db.ref('messages').child(message.firebaseKey).remove();
+                }
+            });
         }
     }
 
     markSelectedAsRead() {
         const selectedIds = Array.from(document.querySelectorAll('.message-checkbox:checked'))
-            .map(checkbox => parseInt(checkbox.closest('.message-item').dataset.id));
+            .map(checkbox => checkbox.closest('.message-item').dataset.id);
         
         if (selectedIds.length === 0) {
             alert('Por favor, selecciona al menos un mensaje para marcar como leído.');
             return;
         }
 
-        this.messages.forEach(message => {
-            if (selectedIds.includes(message.id)) {
-                message.read = true;
+        // Marcar mensajes como leídos en Firebase
+        selectedIds.forEach(id => {
+            const message = this.messages.find(m => m.id.toString() === id);
+            if (message && message.firebaseKey) {
+                db.ref('messages').child(message.firebaseKey).update({ read: true });
             }
         });
-        this.renderMessages();
     }
 
     logout() {
         localStorage.removeItem('adminAuth');
         window.location.href = 'login.html';
+    }
+
+    setupFirebaseListener() {
+        db.ref('messages').on('value', (snapshot) => {
+            this.messages = [];
+            snapshot.forEach((child) => {
+                this.messages.push({
+                    ...child.val(),
+                    firebaseKey: child.key
+                });
+            });
+            this.renderMessages();
+        });
     }
 }
 
