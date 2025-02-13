@@ -139,4 +139,107 @@
     margin-bottom: 0.5rem;
     color: var(--color-link);
     font-size: 1.2rem;
+}
+
+.traffic-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--color-link);
+}
+
+.stat-info h3 {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-info p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.traffic-chart-container {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    height: 400px;
+}
+
+.traffic-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.traffic-select {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.traffic-select:focus {
+    outline: none;
+    border-color: var(--color-link);
+}
+
+.traffic-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.detail-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.detail-card h3 {
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+}
+
+.detail-chart {
+    height: 300px;
+    position: relative;
+}
+
+.detail-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media (max-width: 768px) {
+    .traffic-details {
+        grid-template-columns: 1fr;
+    }
 } 

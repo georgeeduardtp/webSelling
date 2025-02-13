@@ -23,6 +23,15 @@ function initializeFirebase() {
         }
         
         window.db = firebase.database();
+
+        // Agregar después de la inicialización de Firebase
+        firebase.database().ref('.info/connected').on('value', function(snap) {
+            if (snap.val() === true) {
+                console.log('Conectado a Firebase');
+            } else {
+                console.error('Error de conexión con Firebase');
+            }
+        });
     } catch (error) {
         console.error('Error al inicializar Firebase:', error);
     }

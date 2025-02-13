@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -35,6 +36,10 @@
                 <a href="#" class="admin-menu-item" data-section="reviews">
                     <i class="fas fa-star"></i>
                     Reseñas
+                </a>
+                <a href="#" class="admin-menu-item" data-section="traffic">
+                    <i class="fas fa-chart-line"></i>
+                    Tráfico
                 </a>
                 <a href="#" class="admin-menu-item" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -83,6 +88,72 @@
                     <h1>Configuración</h1>
                 </div>
                 <!-- Contenido de configuración aquí -->
+            </div>
+
+            <!-- Sección de Tráfico -->
+            <div class="admin-section" id="trafficSection" style="display: none;">
+                <div class="admin-header">
+                    <h1>Estadísticas de Tráfico</h1>
+                    <div class="traffic-filters">
+                        <select id="trafficPeriod" class="traffic-select">
+                            <option value="7">Últimos 7 días</option>
+                            <option value="30">Últimos 30 días</option>
+                            <option value="90">Últimos 90 días</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="traffic-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3>Visitantes Totales</h3>
+                            <p id="totalVisitors">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h3>Tiempo Promedio</h3>
+                            <p id="avgTime">0 min</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <div class="stat-info">
+                            <h3>Visitas Hoy</h3>
+                            <p id="todayVisits">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="traffic-details">
+                    <div class="detail-card">
+                        <h3>Páginas más visitadas</h3>
+                        <div id="pagesChart" class="detail-chart">
+                            <canvas></canvas>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Dispositivos</h3>
+                        <div id="devicesChart" class="detail-chart">
+                            <canvas></canvas>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Navegadores</h3>
+                        <div id="browsersChart" class="detail-chart">
+                            <canvas></canvas>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Fuentes de tráfico</h3>
+                        <div id="referrersChart" class="detail-chart">
+                            <canvas></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="traffic-chart-container">
+                    <canvas id="trafficChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
