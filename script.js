@@ -200,7 +200,7 @@ window.addEventListener('scroll', () => {
     updateActiveLink();
 });
 
-// Actualizar el manejo del formulario
+// Actualizar el manejo del formulario de contacto
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -211,13 +211,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const submitButton = this.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             
+            // Crear el objeto formData con todos los campos requeridos
             const formData = {
                 id: Date.now(),
                 name: document.getElementById('nombre').value,
                 email: document.getElementById('email').value,
                 message: document.getElementById('mensaje').value,
-                date: new Date().toISOString().split('T')[0],
-                read: false
+                timestamp: Date.now(),
+                read: false // Campo requerido por las reglas
             };
 
             // Verificar que db está definido
@@ -259,8 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .finally(() => {
                     // Reactivar el botón
                     submitButton.disabled = false;
-                    const loader = document.querySelector('.loader-container');
-                    loader.classList.add('hidden');
                 });
         });
     }
@@ -290,4 +289,78 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             behavior: 'smooth'
         });
     });
+});
+
+// Agregar al final del archivo
+function setupVideoCarousel() {
+    const container = document.querySelector('.carousel-container');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    const prevButton = document.querySelector('.carousel-button.prev');
+    const nextButton = document.querySelector('.carousel-button.next');
+    const videos = document.querySelectorAll('.carousel-slide video');
+    
+    let currentIndex = 0;
+    
+    // Crear dots
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+    });
+    
+    // Funciones de navegación
+    function goToSlide(index) {
+        // Pausar todos los videos
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
+        
+        currentIndex = index;
+        container.style.transform = `translateX(-${index * 100}%)`;
+        updateDots();
+        
+        // Reproducir el video actual
+        const currentVideo = videos[currentIndex];
+        if (currentVideo) {
+            currentVideo.play().catch(error => {
+                console.log('Error al reproducir el video:', error);
+                // Los navegadores pueden bloquear la reproducción automática
+                // si el usuario no ha interactuado con la página
+            });
+        }
+    }
+    
+    function updateDots() {
+        document.querySelectorAll('.dot').forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    // Event listeners para los botones
+    prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        goToSlide(currentIndex);
+    });
+    
+    nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        goToSlide(currentIndex);
+    });
+    
+    // Reproducir el primer video cuando la página cargue
+    const firstVideo = videos[0];
+    if (firstVideo) {
+        firstVideo.play().catch(error => {
+            console.log('Error al reproducir el primer video:', error);
+        });
+    }
+}
+
+// Llamar a la función cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    setupVideoCarousel();
 });

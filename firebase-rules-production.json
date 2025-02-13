@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "messages": {
+      ".read": "auth != null && auth.token.isAdmin === true",
+      ".write": true
+    },
+    "reviews": {
+      ".read": true,
+      ".write": true
+    },
+    "pageStats": {
+      ".read": true,
+      ".write": true
+    }
+  }
+} 
