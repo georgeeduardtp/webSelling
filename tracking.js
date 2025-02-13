@@ -10,28 +10,38 @@ class TrackingService {
     }
 
     sanitizePath(path) {
-        console.log('🔍 Procesando ruta:', path);
-        // Si estamos en GitHub Pages, eliminar el nombre del repositorio
-        const pathWithoutRepo = path.replace(/^\/[^/]+\//, '/');
-        console.log('🔄 Ruta sin repositorio:', pathWithoutRepo);
+        console.log('🔍 Procesando ruta original:', path);
         
-        const finalPath = pathWithoutRepo
-            .replace(/^\//, '')
-            .replace(/\.html$/, '')
-            .replace(/[^a-zA-Z0-9]/g, '_')
+        // Extraer solo la última parte de la ruta (después de la última barra)
+        const lastPart = path.split('/').pop() || '';
+        console.log('🔍 Última parte de la ruta:', lastPart);
+
+        // Limpiar y normalizar la ruta
+        let cleanPath = lastPart
             .toLowerCase()
-            .replace(/^$/, 'home');
+            // Eliminar extensión .html
+            .replace(/\.html$/, '')
+            // Eliminar todos los caracteres no permitidos
+            .replace(/[^a-z0-9]/g, '_')
+            // Eliminar guiones bajos múltiples
+            .replace(/_+/g, '_')
+            // Eliminar guiones bajos al inicio y final
+            .replace(/^_|_$/g, '')
+            // Si está vacío, usar 'home'
+            || 'home';
             
-        console.log('✅ Ruta final:', finalPath);
-        return finalPath;
+        console.log('✅ Ruta final limpia:', cleanPath);
+        return cleanPath;
     }
 
     getPageInfo() {
         const path = this.sanitizePath(window.location.pathname);
-        return { 
-            path: path || 'home',
-            title: document.title || path 
+        const pageInfo = {
+            path: path,
+            title: document.title || path
         };
+        console.log('📄 Información de página:', pageInfo);
+        return pageInfo;
     }
 
     async initializeTracking() {
@@ -62,33 +72,34 @@ class TrackingService {
                         avgTime: 0,
                         totalTime: 0,
                         sessions: 1,
-                        pages: {
-                            [pageInfo.path]: 1
-                        },
-                        devices: {
-                            [deviceInfo.type]: 1
-                        },
-                        browsers: {
-                            [deviceInfo.browser]: 1
-                        }
+                        pages: {},
+                        devices: {},
+                        browsers: {}
                     };
+                    // Asegurar que los objetos anidados existan y tengan al menos un valor
+                    newData.pages[pageInfo.path] = 1;
+                    newData.devices[deviceInfo.type] = 1;
+                    newData.browsers[deviceInfo.browser] = 1;
+                    
                     console.log('🆕 Creando nuevos datos:', newData);
                     return newData;
                 }
 
-                // Actualizar contadores
+                // Asegurar que todos los objetos necesarios existan
                 const pages = currentData.pages || {};
-                pages[pageInfo.path] = (pages[pageInfo.path] || 0) + 1;
-
                 const devices = currentData.devices || {};
-                devices[deviceInfo.type] = (devices[deviceInfo.type] || 0) + 1;
-
                 const browsers = currentData.browsers || {};
+
+                // Actualizar contadores de manera segura
+                pages[pageInfo.path] = (pages[pageInfo.path] || 0) + 1;
+                devices[deviceInfo.type] = (devices[deviceInfo.type] || 0) + 1;
                 browsers[deviceInfo.browser] = (browsers[deviceInfo.browser] || 0) + 1;
 
                 const updatedData = {
-                    ...currentData,
+                    timestamp: Date.now(),
                     visits: (currentData.visits || 0) + 1,
+                    avgTime: currentData.avgTime || 0,
+                    totalTime: currentData.totalTime || 0,
                     sessions: (currentData.sessions || 0) + 1,
                     pages,
                     devices,
@@ -106,6 +117,9 @@ class TrackingService {
             this.verifyTracking(today);
         } catch (error) {
             console.error('❌ Error en tracking:', error);
+            if (error.message.includes('permission_denied')) {
+                console.error('❌ Error de permisos. Verifica las reglas de Firebase');
+            }
         }
     }
 

@@ -15,8 +15,14 @@ window.FirebaseApp = {
     init() {
         try {
             console.log('🔄 Iniciando inicialización de Firebase...');
-            console.log('Firebase disponible:', typeof firebase !== 'undefined');
-            console.log('Firebase apps:', firebase.apps.length);
+            console.log('📍 Dominio actual:', window.location.hostname);
+            
+            // Verificar si estamos en localhost o GitHub Pages
+            const isLocalhost = window.location.hostname === 'localhost' || 
+                              window.location.hostname === '127.0.0.1' ||
+                              window.location.protocol === 'file:';
+            
+            console.log('🌐 Entorno:', isLocalhost ? 'Local' : 'Producción');
 
             if (!firebase.apps.length) {
                 console.log('📱 Inicializando nueva app de Firebase...');
@@ -28,20 +34,12 @@ window.FirebaseApp = {
 
             console.log('🔄 Inicializando base de datos...');
             window.db = firebase.database();
-            console.log('✅ Base de datos inicializada');
-
-            // Verificar que la base de datos está accesible
-            return window.db.ref('.info/connected').once('value')
-                .then(snapshot => {
-                    console.log('🔌 Estado de conexión inicial:', snapshot.val());
-                    return true;
-                })
-                .catch(error => {
-                    console.error('❌ Error al verificar conexión:', error);
-                    return false;
-                });
+            
+            // Verificar conexión inmediatamente
+            return this.checkConnection();
         } catch (error) {
             console.error('❌ Error en init:', error);
+            this.showError('Error al inicializar Firebase: ' + error.message);
             return false;
         }
     },
@@ -49,52 +47,69 @@ window.FirebaseApp = {
     async checkConnection() {
         if (!window.db) {
             console.error('❌ La base de datos no está inicializada');
+            this.showError('La base de datos no está inicializada');
             return false;
         }
 
         try {
             const connectedRef = window.db.ref('.info/connected');
-            connectedRef.on('value', (snap) => {
-                const isConnected = snap.val() === true;
-                console.log('🔌 Estado de conexión:', isConnected ? 'Conectado' : 'Desconectado');
-                
-                // Mostrar un indicador visual del estado de conexión
-                this.showConnectionStatus(isConnected);
+            return new Promise((resolve) => {
+                connectedRef.on('value', (snap) => {
+                    const isConnected = snap.val() === true;
+                    console.log('🔌 Estado de conexión:', isConnected ? 'Conectado' : 'Desconectado');
+                    
+                    if (isConnected) {
+                        this.showSuccess('Conectado a Firebase');
+                    } else {
+                        this.showError('Desconectado de Firebase');
+                    }
+                    
+                    resolve(isConnected);
+                });
             });
-            return true;
         } catch (error) {
             console.error('❌ Error al verificar conexión:', error);
+            this.showError('Error al verificar conexión: ' + error.message);
             return false;
         }
     },
 
-    showConnectionStatus(isConnected) {
-        let statusDiv = document.getElementById('firebase-status');
-        if (!statusDiv) {
-            statusDiv = document.createElement('div');
-            statusDiv.id = 'firebase-status';
-            statusDiv.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-size: 14px;
-                z-index: 9999;
-                transition: all 0.3s ease;
-            `;
-            document.body.appendChild(statusDiv);
-        }
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            z-index: 10000;
+            font-size: 14px;
+            max-width: 300px;
+        `;
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000);
+    },
 
-        statusDiv.style.backgroundColor = isConnected ? '#4caf50' : '#f44336';
-        statusDiv.style.color = 'white';
-        statusDiv.textContent = isConnected ? '✅ Conectado' : '❌ Desconectado';
-
-        // Ocultar después de 3 segundos
-        setTimeout(() => {
-            statusDiv.style.opacity = '0';
-            setTimeout(() => statusDiv.remove(), 300);
-        }, 3000);
+    showSuccess(message) {
+        const successDiv = document.createElement('div');
+        successDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            z-index: 10000;
+            font-size: 14px;
+            max-width: 300px;
+        `;
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+        setTimeout(() => successDiv.remove(), 3000);
     }
 };
 
@@ -105,12 +120,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const initialized = await FirebaseApp.init();
         if (initialized) {
             console.log('✅ Firebase inicializado completamente');
-            FirebaseApp.checkConnection();
         } else {
             console.error('❌ No se pudo inicializar Firebase');
         }
     } catch (error) {
         console.error('💥 Error fatal:', error);
+        FirebaseApp.showError('Error fatal al inicializar Firebase');
     }
 });
 
