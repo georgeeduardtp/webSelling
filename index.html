@@ -154,10 +154,26 @@
         </div>
     </footer>
 
+    <!-- Scripts de Firebase - IMPORTANTE: Este orden es crucial -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Nuestros scripts -->
     <script src="firebase-config.js"></script>
-    <script src="script.js"></script> <!-- Asegúrate de que este script esté al final -->
+    <script>
+        // Verificar que Firebase se ha cargado correctamente
+        window.addEventListener('load', () => {
+            if (window.FirebaseApp) {
+                console.log('Firebase está disponible');
+                FirebaseApp.init();
+                FirebaseApp.checkConnection();
+            } else {
+                console.error('Firebase no está disponible');
+            }
+        });
+    </script>
     <script src="tracking.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
