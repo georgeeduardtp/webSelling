@@ -35,6 +35,23 @@ function handleScrollAnimations() {
             card.classList.add('visible');
         }
     });
+
+    // Animar características
+    const caracteristicas = document.querySelectorAll('.caracteristica-item');
+    caracteristicas.forEach((caracteristica) => {
+        const caracteristicaTop = caracteristica.getBoundingClientRect().top;
+        const caracteristicaBottom = caracteristica.getBoundingClientRect().bottom;
+        const windowHeight = window.innerHeight;
+        
+        // Verificar si la característica está fuera de la vista
+        if (caracteristicaBottom < 0 || caracteristicaTop > windowHeight) {
+            caracteristica.classList.remove('visible');
+        }
+        // Verificar si la característica está entrando en la vista
+        else if (caracteristicaTop < windowHeight * 0.8) {
+            caracteristica.classList.add('visible');
+        }
+    });
 }
 
 // Función para el scroll suave

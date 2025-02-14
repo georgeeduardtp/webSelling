@@ -207,46 +207,4 @@ function checkTrackingData() {
 }
 
 // Llamar a la función después de 5 segundos
-setTimeout(checkTrackingData, 5000);
-
-// Mostrar estado de conexión
-function showConnectionStatus() {
-    const statusIndicator = document.createElement('div');
-    statusIndicator.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        z-index: 9999;
-        display: none;
-        transition: opacity 0.3s ease;
-    `;
-    document.body.appendChild(statusIndicator);
-
-    window.db.ref('.info/connected').on('value', (snap) => {
-        statusIndicator.style.display = 'block';
-        statusIndicator.style.opacity = '1';
-        
-        if (snap.val() === true) {
-            statusIndicator.innerHTML = '✅ Tracking activo';
-            statusIndicator.style.backgroundColor = 'rgba(46, 160, 67, 0.9)';
-        } else {
-            statusIndicator.innerHTML = '❌ Tracking desconectado';
-            statusIndicator.style.backgroundColor = 'rgba(248, 81, 73, 0.9)';
-        }
-
-        setTimeout(() => {
-            statusIndicator.style.opacity = '0';
-            setTimeout(() => {
-                statusIndicator.style.display = 'none';
-            }, 300);
-        }, 3000);
-    });
-}
-
-// Iniciar monitoreo de conexión
-showConnectionStatus(); 
+setTimeout(checkTrackingData, 5000); 

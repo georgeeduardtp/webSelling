@@ -39,7 +39,6 @@ window.FirebaseApp = {
             return this.checkConnection();
         } catch (error) {
             console.error('❌ Error en init:', error);
-            this.showError('Error al inicializar Firebase: ' + error.message);
             return false;
         }
     },
@@ -47,7 +46,6 @@ window.FirebaseApp = {
     async checkConnection() {
         if (!window.db) {
             console.error('❌ La base de datos no está inicializada');
-            this.showError('La base de datos no está inicializada');
             return false;
         }
 
@@ -57,59 +55,13 @@ window.FirebaseApp = {
                 connectedRef.on('value', (snap) => {
                     const isConnected = snap.val() === true;
                     console.log('🔌 Estado de conexión:', isConnected ? 'Conectado' : 'Desconectado');
-                    
-                    if (isConnected) {
-                        this.showSuccess('Conectado a Firebase');
-                    } else {
-                        this.showError('Desconectado de Firebase');
-                    }
-                    
                     resolve(isConnected);
                 });
             });
         } catch (error) {
             console.error('❌ Error al verificar conexión:', error);
-            this.showError('Error al verificar conexión: ' + error.message);
             return false;
         }
-    },
-
-    showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(220, 53, 69, 0.9);
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            z-index: 10000;
-            font-size: 14px;
-            max-width: 300px;
-        `;
-        errorDiv.textContent = message;
-        document.body.appendChild(errorDiv);
-        setTimeout(() => errorDiv.remove(), 5000);
-    },
-
-    showSuccess(message) {
-        const successDiv = document.createElement('div');
-        successDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(40, 167, 69, 0.9);
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            z-index: 10000;
-            font-size: 14px;
-            max-width: 300px;
-        `;
-        successDiv.textContent = message;
-        document.body.appendChild(successDiv);
-        setTimeout(() => successDiv.remove(), 3000);
     }
 };
 
@@ -125,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('💥 Error fatal:', error);
-        FirebaseApp.showError('Error fatal al inicializar Firebase');
     }
 });
 
