@@ -169,6 +169,41 @@ function updateSearchCount(count, current = 0) {
     }
 }
 
+// Función para manejar la interacción táctil en tarjetas de servicios
+function setupMobileServiceCards() {
+    const servicioCards = document.querySelectorAll('.servicio-card');
+    let activeCard = null;
+
+    servicioCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Solo ejecutar en móvil
+            if (window.innerWidth <= 768) {
+                // Si hay una tarjeta activa y no es la actual, desactivarla
+                if (activeCard && activeCard !== this) {
+                    activeCard.classList.remove('active');
+                }
+
+                // Toggle la clase active en la tarjeta actual
+                this.classList.toggle('active');
+                activeCard = this.classList.contains('active') ? this : null;
+
+                // Prevenir que el clic se propague si se hizo en el dropdown
+                if (e.target.closest('.caracteristicas-dropdown')) {
+                    e.stopPropagation();
+                }
+            }
+        });
+    });
+
+    // Cerrar tarjeta activa al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768 && activeCard && !e.target.closest('.servicio-card')) {
+            activeCard.classList.remove('active');
+            activeCard = null;
+        }
+    });
+}
+
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.querySelector('.loader-container');
@@ -184,12 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loader.classList.remove('hidden');
             setTimeout(() => {
                 loader.classList.add('hidden');
-            }, 500); // Ajustar este tiempo según necesites
+            }, 500);
         });
     });
 
-    setupNavigation(); // Asegúrate de que esta función se llame aquí
+    setupNavigation();
     setupSearch();
+    setupMobileServiceCards();
     handleScrollAnimations();
     updateActiveLink();
 });

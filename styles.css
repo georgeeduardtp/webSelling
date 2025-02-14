@@ -851,10 +851,41 @@ body {
         position: static;
         margin-top: 1rem;
         display: none;
+        animation: slideDown 0.3s ease forwards;
+    }
+
+    .servicio-card {
+        cursor: pointer;
+        position: relative;
     }
 
     .servicio-card:hover .caracteristicas-dropdown {
+        display: none; /* Desactivar el hover en móvil */
+    }
+
+    .servicio-card.active {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(47, 129, 247, 0.2);
+    }
+
+    .servicio-card.active .caracteristicas-dropdown {
         display: block;
+    }
+
+    .servicio-card.active i {
+        transform: translateY(-3px);
+        color: var(--color-link) !important;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .caracteristicas-dropdown::before {
